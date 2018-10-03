@@ -1,0 +1,45 @@
+.withicon {    
+    -fx-background-position: right 4.0px center;
+    -fx-background-size: 14.0;
+    -fx-background-repeat: no-repeat;
+}
+
+.showing {
+    -fx-background-image: url("/style/eye.png");
+    -fx-text-fill: red;
+}
+
+.hiding {
+    -fx-background-image: none;
+}
+
+.pnlRoot{
+	-fx-background-color:  #19323c;
+}
+
+.pnlMenu{
+	-fx-background-color:  #2b9a7c;
+}
+.pnlDetails{
+	-fx-background-color:  #ffc689;
+}
+
+.pnlDetailsTitle{
+	-fx-background-color:  #2b9a7c;
+}
+
+.btn{
+	-fx-background-color: transparent;
+	-fx-cursor: hand ;
+}
+.btn_menu{
+	-fx-background-color: transparent;
+	-fx-cursor: hand ;
+}
+.btnX{
+	-fx-rotate: 45.0;
+}
+
+.btn_menu:hover{
+	-fx-background-color:rgba(30.0, 180.0, 139.0, 0.54) /*  rgba(43, 154, 124, 0.43)*/ ;
+}

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="940.0" styleClass="pnlRoot" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.MainController">
+   <right>
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="pnlMenu" BorderPane.alignment="CENTER">
+         <children>
+            <Pane prefHeight="210.0" prefWidth="100.0" />
+            <Button fx:id="btnAdd" onAction="#btnAddClicked" ellipsisString="" mnemonicParsing="false" prefHeight="78.0" prefWidth="113.0" styleClass="btn_menu">
+               <graphic>
+                  <ImageView fitHeight="70.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icon/add.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="btnEdit" ellipsisString="" layoutX="10.0" layoutY="220.0" mnemonicParsing="false" prefHeight="78.0" prefWidth="113.0" styleClass="btn_menu">
+               <graphic>
+                  <ImageView fitHeight="70.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icon/edit.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="btnDelete" ellipsisString="" layoutX="10.0" layoutY="299.0" mnemonicParsing="false" prefHeight="78.0" prefWidth="113.0" styleClass="btn_menu">
+               <graphic>
+                  <ImageView fitHeight="70.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true" styleClass="btnX">
+                     <image>
+                        <Image url="@../icon/add.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Pane prefHeight="98.0" prefWidth="100.0" />
+            <Button fx:id="btnConfigCall" ellipsisString="" layoutX="10.0" layoutY="220.0" mnemonicParsing="false" prefHeight="78.0" prefWidth="113.0" styleClass="btn_menu">
+               <graphic>
+                  <ImageView fitHeight="58.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true" styleClass="btn_menu">
+                     <image>
+                        <Image url="@../icon/phoneEdit.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children></VBox>
+   </right>
+   <center>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <center>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <left>
+                  <VBox prefHeight="584.0" prefWidth="276.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <AnchorPane prefHeight="35.0" prefWidth="276.0">
+                           <children>
+                              <Label layoutX="58.0" layoutY="9.0" prefHeight="36.0" prefWidth="134.0" text="CONTATOS" textFill="WHITE" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="58.0" AnchorPane.rightAnchor="59.0" AnchorPane.topAnchor="9.0">
+                                 <font>
+                                    <Font name="System Bold" size="24.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <HBox prefHeight="26.0" prefWidth="212.0" spacing="10.0">
+                           <children>
+                              <TextField fx:id="txtSearch" prefHeight="26.0" prefWidth="169.0" />
+                              <Button fx:id="btnSearch" mnemonicParsing="false" text="Pesquisar" />
+                           </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </HBox>
+                        <GridPane prefHeight="542.0" prefWidth="250.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                           <children>
+                              <ListView fx:id="lstContact" prefHeight="200.0" prefWidth="200.0" />
+                           </children>
+                        </GridPane>
+                     </children>
+                     <padding>
+                        <Insets left="25.0" />
+                     </padding>
+                  </VBox>
+               </left>
+               <center>
+                  <GridPane prefHeight="558.0" prefWidth="571.0" BorderPane.alignment="CENTER">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="51.8" prefWidth="51.8" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="463.99999999999994" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="51.8" prefWidth="51.8" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="32.79998893737793" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="481.39998779296883" minHeight="395.800030517578" prefHeight="477.39998779296883" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="108.80001220703127" minHeight="5.599981689453102" prefHeight="66.20001220703125" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <AnchorPane fx:id="pnlDetails" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="482.0" prefWidth="463.99999999999994" styleClass="pnlDetails" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <children>
+                              <Label layoutX="16.0" layoutY="27.0" text="NOME" AnchorPane.leftAnchor="16.0" />
+                              <TextField fx:id="txtName" layoutX="16.0" layoutY="46.0" prefHeight="26.0" prefWidth="433.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="15.0" />
+                              <Label layoutX="17.0" layoutY="77.0" text="CPF" AnchorPane.leftAnchor="16.0" />
+                              <TextField fx:id="txtCPF" layoutX="16.0" layoutY="97.0" prefHeight="26.0" prefWidth="138.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="315.0" />
+                              <Label layoutX="234.0" layoutY="78.0" text="RG" />
+                              <TextField fx:id="txtRG" layoutX="239.0" layoutY="97.0" prefHeight="26.0" prefWidth="138.0" AnchorPane.leftAnchor="239.0" />
+                              <Label layoutX="14.0" layoutY="128.0" text="APELIDO" AnchorPane.leftAnchor="16.0" />
+                              <TextField fx:id="txtNickname" layoutX="16.0" layoutY="147.0" prefHeight="26.0" prefWidth="433.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="15.0" />
+                              <Label layoutX="14.0" layoutY="180.0" text="ENDEREÇO" AnchorPane.leftAnchor="16.0" />
+                              <TextArea fx:id="txtAddress" layoutX="16.0" layoutY="199.0" prefHeight="74.0" prefWidth="434.0" wrapText="true" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="15.0" />
+                              <Label layoutX="15.0" layoutY="281.0" text="E-MAIL" AnchorPane.leftAnchor="16.0" />
+                              <TextField fx:id="txtEmail" layoutX="16.0" layoutY="300.0" prefHeight="26.0" prefWidth="433.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="15.0" />
+                              <Label layoutX="16.0" layoutY="334.0" text="TELEFONE 1" AnchorPane.leftAnchor="16.0" />
+                              <TextField fx:id="txtPhone" layoutX="16.0" layoutY="354.0" prefHeight="26.0" prefWidth="138.0" AnchorPane.leftAnchor="16.0" />
+                              <Label layoutX="183.0" layoutY="334.0" text="WHATSAPP" />
+                              <TextField fx:id="txtWhatsapp" layoutX="181.0" layoutY="354.0" prefHeight="26.0" prefWidth="138.0" />
+                              <Label layoutX="46.0" layoutY="401.0" text="ULTIMA LIGAÇÂO" />
+                              <DatePicker fx:id="dateLastCall" layoutX="146.0" layoutY="397.0" />
+                              <Button fx:id="btnSave" onAction="#btnSaveClicked"  ellipsisString="" layoutX="188.0" layoutY="424.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="58.0" styleClass="btn">
+                                 <graphic>
+                                    <ImageView fitHeight="70.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icon/save.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Pane prefHeight="20.0" prefWidth="465.0" styleClass="pnlDetailsTitle">
+                                 <children>
+                                    <Button fx:id="btnCloseDetails" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutX="434.0" layoutY="-7.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#btnCloseDetailsClicked" prefHeight="33.0" prefWidth="17.0" styleClass="btn">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <graphic>
+                                          <ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" styleClass="btnX">
+                                             <image>
+                                                <Image url="@../icon/add.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Label fx:id="lblDetailsTitle" layoutX="7.0" layoutY="3.0" text="ADICIONAR CONTATO" textFill="WHITE" />
+                                 </children>
+                              </Pane>
+                              <Button fx:id="btnConfirmCall" ellipsisString="" layoutX="327.0" layoutY="354.0" mnemonicParsing="false" prefHeight="69.0" prefWidth="114.0" styleClass="btn">
+                                 <graphic>
+                                    <ImageView fitHeight="58.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true" styleClass="btn_menu">
+                                       <image>
+                                          <Image url="@../icon/phoneOk.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </GridPane>
+               </center>
+            </BorderPane>
+         </center>
+         <top>
+            <GridPane prefHeight="142.0" prefWidth="814.0" BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="303.1999755859375" prefWidth="303.1999755859375" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="274.4000244140625" minWidth="10.0" prefWidth="255.19996337890626" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="283.2000366210938" prefWidth="283.2000366210938" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label text="AGENDA" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="Serif Bold" size="36.0" />
+                     </font>
+                  </Label>
+               </children>
+            </GridPane>
+         </top>
+      </BorderPane>
+   </center>
+</BorderPane>

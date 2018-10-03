@@ -1,0 +1,26 @@
+CREATE DATABASE `contact_list` /*!40100 DEFAULT CHARACTER SET utf8 */;
+
+use contact_list;
+
+CREATE TABLE `contact` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(60) NOT NULL,
+  `CPF` varchar(13) NOT NULL,
+  `RG` varchar(12) NOT NULL,
+  `NICKNAME` varchar(50) DEFAULT NULL,
+  `ADDRESS` varchar(200) NOT NULL,
+  `EMAIL` varchar(100) NOT NULL,
+  `PHONE` varchar(11) NOT NULL,
+  `WHATSAPP` varchar(11) NOT NULL,
+  `LAST_CALL` timestamp NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `reminder` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `DATE_NEXT_CALL` timestamp NOT NULL,
+  `CONTACT` int(11) NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `CONTACT_idx` (`CONTACT`),
+  CONSTRAINT `CONTACT` FOREIGN KEY (`CONTACT`) REFERENCES `contact` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
