@@ -12,13 +12,13 @@ CREATE TABLE `contact` (
   `EMAIL` varchar(100) NOT NULL,
   `PHONE` varchar(11) NOT NULL,
   `WHATSAPP` varchar(11) NOT NULL,
-  `LAST_CALL` timestamp NOT NULL,
+  `LAST_CALL` date NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `reminder` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `DATE_NEXT_CALL` timestamp NOT NULL,
+  `NEXT_CALL` date NOT NULL,
   `CONTACT` int(11) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `CONTACT_idx` (`CONTACT`),

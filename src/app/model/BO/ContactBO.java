@@ -12,8 +12,14 @@ public class ContactBO {
 		return new ContactDAO().getList();
 	}
 
-	public void save(ContactVO objContact) {
-		System.out.println("booooraaaa");
-		new ContactDAO().save(objContact);
+	public void saveOrUpdate(ContactVO objContact) {
+		if (objContact.getId() == 0)
+			new ContactDAO().save(objContact);
+		else
+			new ContactDAO().update(objContact);
+	}
+
+	public void delete(ContactVO contact) {
+		new ContactDAO().delete(contact.getId());
 	}
 }

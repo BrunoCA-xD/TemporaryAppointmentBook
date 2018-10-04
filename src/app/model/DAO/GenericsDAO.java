@@ -28,6 +28,7 @@ public abstract class GenericsDAO<T, I extends Serializable> {
     }
 
     public boolean save(T entity) {
+    	System.out.println(entity == null);
         EntityTransaction t = entityManager.getTransaction();
         t.begin();
         entityManager.persist(entity);

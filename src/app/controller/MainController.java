@@ -76,20 +76,15 @@ public class MainController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		btnCloseDetails.getStyleClass().add("btn");
-		observableListContacts.add(new ContactVO("aaa", LocalDate.of(2017, 11, 12)));
-		observableListContacts.add(new ContactVO("bbb", LocalDate.of(2018, 10, 4)));
-		observableListContacts.add(new ContactVO("ccc", LocalDate.of(2018, 12, 4)));
-		observableListContacts.add(new ContactVO("ddd", LocalDate.now()));
+		observableListContacts.setAll(new ContactBO().listAll());
 
 		dateLastCall.setValue(LocalDate.now());
 		lstContact.setCellFactory(a -> new ContactListCell());
 
-		lstContact.setItems(observableListContacts);
-
 		lstContact.setOnMouseClicked(MouseEvent -> {
 			lstContactItemClicked(MouseEvent);
 		});
-
+		fillContactList();
 	}
 
 	@FXML
@@ -104,7 +99,20 @@ public class MainController implements Initializable {
 		if (!pnlDetails.isVisible())
 			pnlDetails.setVisible(true);
 		clearDetailsField();
+
+		setPnlDetailsTitle("ADICIONAR CONTATO");
 		contact = null;
+		dateLastCall.setValue(LocalDate.now());
+
+		enableOrDisableDetailsField(false);
+		btnSave.setDisable(false);
+		btnConfirmCall.setVisible(false);
+	}
+	
+	@FXML
+	public void btnEditClicked() {
+		enableOrDisableDetailsField(false);
+		btnSave.setDisable(false);
 	}
 
 	@FXML
@@ -114,13 +122,47 @@ public class MainController implements Initializable {
 					txtNickname.getText().trim(), txtAddress.getText().trim(), txtEmail.getText().trim(),
 					txtPhone.getText().trim(), txtWhatsapp.getText().trim(), dateLastCall.getValue());
 		}
-		new ContactBO().save(contact);
+		else {
+			contact.setName(txtName.getText().trim());
+			contact.setCPF(txtCPF.getText().trim());
+			contact.setRG(txtRG.getText().trim());
+			contact.setNickname(txtNickname.getText().trim());
+			contact.setAddress(txtAddress.getText().trim());
+			contact.setEmail(txtEmail.getText().trim());
+			contact.setPhone(txtPhone.getText().trim());
+			contact.setWhatsapp(txtWhatsapp.getText().trim());
+			contact.setLastCall(dateLastCall.getValue());
+		}
+		new ContactBO().saveOrUpdate(contact);
+		fillContactList();
 	}
-
+	
+	@FXML
+	public void btnConfirmCallClicked() {	
+		System.out.println(LocalDate.now());
+		contact.setLastCall(LocalDate.now());
+		dateLastCall.setValue(LocalDate.now());
+		new ContactBO().saveOrUpdate(contact);
+		fillContactList();
+	}
+	@FXML
+	public void btnDeleteClicked() {	
+		
+		new ContactBO().delete(contact);
+		clearDetailsField();
+		fillContactList();
+	}
 	private void lstContactItemClicked(MouseEvent mouseEvent) {
 		int selected = lstContact.getSelectionModel().getSelectedIndex();
-		contact = observableListContacts.get(selected);
+		contact = lstContact.getItems().get(selected);
 		fillDetailsField(contact);
+		enableOrDisableDetailsField(true);
+		btnConfirmCall.setVisible(true);
+	}
+
+	private void setPnlDetailsTitle(String pnlTitle) {
+
+		lblDetailsTitle.setText(pnlTitle);
 	}
 
 	private void fillDetailsField(ContactVO contact) {
@@ -134,27 +176,48 @@ public class MainController implements Initializable {
 		txtEmail.setText(contact.getEmail());
 		txtPhone.setText(contact.getPhone());
 		txtWhatsapp.setText(contact.getWhatsapp());
+		System.out.println(contact.getLastCall());
 		dateLastCall.setValue(contact.getLastCall());
+		setPnlDetailsTitle("INFORMAÇÔES DO CONTATO");
+		btnSave.setDisable(true);
 
 	}
 
 	private void clearDetailsField() {
 		List<Node> nodes = pnlDetails.getChildren();
 		nodes.forEach((n) -> {
-			if (n instanceof TextField || n instanceof TextArea) {
+			if (n instanceof TextField || n instanceof TextArea)
 				((TextInputControl) n).setText("");
-			}
+
 		});
+	}
+
+	private void enableOrDisableDetailsField(boolean isDisable) {
+		List<Node> nodes = pnlDetails.getChildren();
+		nodes.forEach((n) -> {
+			if (n instanceof TextField || n instanceof TextArea)
+				((TextInputControl) n).setDisable(isDisable);
+			if (n instanceof DatePicker)
+				n.setDisable(isDisable);
+		});
+	}
+
+	private void fillContactList() {
+		lstContact.getItems().clear();
+		observableListContacts.setAll(new ContactBO().listAll());
+		lstContact.setItems(observableListContacts);
 	}
 }
 
 class ContactListCell extends ListCell<ContactVO> {
 	@Override
 	protected void updateItem(ContactVO item, boolean empty) {
-		// TODO Auto-generated method stub
 		super.updateItem(item, empty);
-		if (item == null)
+		if (item == null || empty) {
+			setText("");
+			getStyleClass().clear();
 			return;
+		}
 		setText(item.getName());
 		if (LocalDate.now().isBefore(item.getLastCall())) {
 			getStyleClass().addAll("withicon", "showing");
