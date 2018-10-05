@@ -1,5 +1,10 @@
 package app.model.BO;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import app.model.DAO.ContactDAO;
@@ -8,8 +13,21 @@ import app.model.VO.ContactVO;
 public class ContactBO {
 
 	public List<ContactVO> listAll() {
+		List<ContactVO> lst = new ContactDAO().getList();
+		lst.forEach(c -> {
 
-		return new ContactDAO().getList();
+			c.setLastCall(addOneDay(c.getLastCall()));
+		});
+		return lst;
+	}
+
+	private LocalDate addOneDay(LocalDate dateToAdd) {
+		GregorianCalendar gc = new GregorianCalendar();
+		Date date = Date.from(dateToAdd.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		gc.setTime(date);
+		gc.add(GregorianCalendar.DAY_OF_MONTH, 1);
+		date = gc.getTime();
+		return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
 	}
 
 	public void saveOrUpdate(ContactVO objContact) {

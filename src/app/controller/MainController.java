@@ -3,11 +3,12 @@ package app.controller;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Observable;
 import java.util.ResourceBundle;
 
 import app.model.BO.ContactBO;
 import app.model.VO.ContactVO;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
@@ -24,53 +26,52 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.control.Label;
 
 public class MainController implements Initializable {
 
 //	@FXML AnchorPane pnlContent;
 	@FXML
-	AnchorPane pnlDetails;
+	private AnchorPane pnlDetails;
 	@FXML
-	TextField txtName;
+	private TextField txtName;
 	@FXML
-	TextField txtCPF;
+	private TextField txtCPF;
 	@FXML
-	TextField txtRG;
+	private TextField txtRG;
 	@FXML
-	TextField txtNickname;
+	private TextField txtNickname;
 	@FXML
-	TextArea txtAddress;
+	private TextArea txtAddress;
 	@FXML
-	TextField txtEmail;
+	private TextField txtEmail;
 	@FXML
-	TextField txtPhone;
+	private TextField txtPhone;
 	@FXML
-	TextField txtWhatsapp;
+	private TextField txtWhatsapp;
 	@FXML
-	DatePicker dateLastCall;
+	private DatePicker dateLastCall;
 	@FXML
-	ListView<ContactVO> lstContact;
+	private ListView<ContactVO> lstContact;
 	@FXML
-	TextField txtSearch;
+	private TextField txtSearch;
 	@FXML
-	Button btnSearch;
+	private Button btnSearch;
 	@FXML
-	Button btnCloseDetails;
+	private Button btnCloseDetails;
 	@FXML
-	Button btnSave;
+	private Button btnSave;
 	@FXML
-	Button btnConfigCall;
+	private Button btnConfigCall;
 	@FXML
-	Button btnDelete;
+	private Button btnDelete;
 	@FXML
-	Button btnEdit;
+	private Button btnEdit;
 	@FXML
-	Button btnAdd;
+	private Button btnAdd;
 	@FXML
-	Button btnConfirmCall;
+	private Button btnConfirmCall;
 	@FXML
-	Label lblDetailsTitle;
+	private Label lblDetailsTitle;
 
 	ObservableList<ContactVO> observableListContacts = FXCollections.observableArrayList();
 	ContactVO contact;
@@ -87,6 +88,15 @@ public class MainController implements Initializable {
 			lstContactItemClicked(MouseEvent);
 		});
 		fillContactList();
+		numericField(txtCPF);
+		addTextLimiter(txtCPF, 11);
+		numericField(txtRG);
+		addTextLimiter(txtRG, 9);
+		numericField(txtPhone);
+		addTextLimiter(txtPhone, 11);
+		numericField(txtWhatsapp);
+		addTextLimiter(txtWhatsapp, 11);
+
 	}
 
 	@FXML
@@ -94,6 +104,7 @@ public class MainController implements Initializable {
 		if (pnlDetails.isVisible())
 			pnlDetails.setVisible(false);
 		clearDetailsField();
+		disableOrEnableControls(true);
 	}
 
 	@FXML
@@ -101,14 +112,125 @@ public class MainController implements Initializable {
 		if (!pnlDetails.isVisible())
 			pnlDetails.setVisible(true);
 		clearDetailsField();
-
 		setPnlDetailsTitle("ADICIONAR CONTATO");
 		contact = null;
 		dateLastCall.setValue(LocalDate.now());
+		enableOrDisableDetailsField(false);
+		btnConfirmCall.setVisible(false);
+		disableOrEnableControls(true);
+		btnSave.setDisable(false);
+	}
 
+	@FXML
+	public void btnEditClicked() {
 		enableOrDisableDetailsField(false);
 		btnSave.setDisable(false);
-		btnConfirmCall.setVisible(false);
+	}
+
+	@FXML
+	public void btnSaveClicked() {
+		if (contact == null) {
+			contact = new ContactVO(txtName.getText().trim(), txtCPF.getText().trim(), txtRG.getText().trim(),
+					txtNickname.getText().trim(), txtAddress.getText().trim(), txtEmail.getText().trim(),
+					txtPhone.getText().trim(), txtWhatsapp.getText().trim(), dateLastCall.getValue());
+		} else {
+			contact.setName(txtName.getText().trim());
+			contact.setCPF(txtCPF.getText().trim());
+			contact.setRG(txtRG.getText().trim());
+			contact.setNickname(txtNickname.getText().trim());
+			contact.setAddress(txtAddress.getText().trim());
+			contact.setEmail(txtEmail.getText().trim());
+			contact.setPhone(txtPhone.getText().trim());
+			contact.setWhatsapp(txtWhatsapp.getText().trim());
+			contact.setLastCall(dateLastCall.getValue());
+		}
+		new ContactBO().saveOrUpdate(contact);
+		fillContactList();
+	}
+
+	@FXML
+	public void btnConfirmCallClicked() {
+		contact.setLastCall(LocalDate.now());
+		dateLastCall.setValue(LocalDate.now());
+		new ContactBO().saveOrUpdate(contact);
+		disableOrEnableControls(false);
+		btnSave.setDisable(true);
+		fillContactList();
+
+	}
+
+	@FXML
+	public void btnDeleteClicked() {
+
+		new ContactBO().delete(contact);
+		clearDetailsField();
+		disableOrEnableControls(true);
+		fillContactList();
+		btnAddClicked();
+	}
+
+	private void lstContactItemClicked(MouseEvent mouseEvent) {
+		int selected = lstContact.getSelectionModel().getSelectedIndex();
+		contact = lstContact.getItems().get(selected);
+		fillDetailsField(contact);
+		enableOrDisableDetailsField(true);
+		disableOrEnableControls(false);
+		btnConfirmCall.setVisible(true);
+
+	}
+
+	private void setPnlDetailsTitle(String pnlTitle) {
+
+		lblDetailsTitle.setText(pnlTitle);
+	}
+
+	private void fillDetailsField(ContactVO contact) {
+		if (!pnlDetails.isVisible())
+			pnlDetails.setVisible(true);
+		txtName.setText(contact.getName());
+		txtRG.setText(contact.getRG());
+		txtCPF.setText(contact.getCPF());
+		txtNickname.setText(contact.getNickname());
+		txtAddress.setText(contact.getAddress());
+		txtEmail.setText(contact.getEmail());
+		txtPhone.setText(contact.getPhone());
+		txtWhatsapp.setText(contact.getWhatsapp());
+		dateLastCall.setValue(contact.getLastCall());
+		setPnlDetailsTitle("INFORMAÇÔES DO CONTATO");
+		disableOrEnableControls(true);
+
+	}
+
+	private void disableOrEnableControls(boolean isDisable) {
+		btnEdit.setDisable(isDisable);
+		btnDelete.setDisable(isDisable);
+		btnSave.setDisable(isDisable);
+
+	}
+
+	private void clearDetailsField() {
+		List<Node> nodes = pnlDetails.getChildren();
+		nodes.forEach((n) -> {
+			if (n instanceof TextField || n instanceof TextArea)
+				((TextInputControl) n).setText("");
+
+		});
+	}
+
+	private void enableOrDisableDetailsField(boolean isDisable) {
+		List<Node> nodes = pnlDetails.getChildren();
+		nodes.forEach((n) -> {
+			if (n instanceof TextField || n instanceof TextArea)
+				((TextInputControl) n).setDisable(isDisable);
+			if (n instanceof DatePicker)
+				n.setDisable(isDisable);
+		});
+	}
+
+	private void fillContactList() {
+		lstContact.getItems().clear();
+		observableListContacts.setAll(new ContactBO().listAll());
+		lstContact.setItems(observableListContacts);
 	}
 
 	@FXML
@@ -147,108 +269,38 @@ public class MainController implements Initializable {
 		img.setImage(new Image(getClass().getResourceAsStream("/icon/add.png")));
 	}
 
-	@FXML
-	public void btnEditClicked() {
-		enableOrDisableDetailsField(false);
-		btnSave.setDisable(false);
-	}
-
-	@FXML
-	public void btnSaveClicked() {
-		if (contact == null) {
-			contact = new ContactVO(txtName.getText().trim(), txtCPF.getText().trim(), txtRG.getText().trim(),
-					txtNickname.getText().trim(), txtAddress.getText().trim(), txtEmail.getText().trim(),
-					txtPhone.getText().trim(), txtWhatsapp.getText().trim(), dateLastCall.getValue());
-		} else {
-			contact.setName(txtName.getText().trim());
-			contact.setCPF(txtCPF.getText().trim());
-			contact.setRG(txtRG.getText().trim());
-			contact.setNickname(txtNickname.getText().trim());
-			contact.setAddress(txtAddress.getText().trim());
-			contact.setEmail(txtEmail.getText().trim());
-			contact.setPhone(txtPhone.getText().trim());
-			contact.setWhatsapp(txtWhatsapp.getText().trim());
-			contact.setLastCall(dateLastCall.getValue());
-		}
-		new ContactBO().saveOrUpdate(contact);
-		fillContactList();
-	}
-
-	@FXML
-	public void btnConfirmCallClicked() {
-		System.out.println(LocalDate.now());
-		contact.setLastCall(LocalDate.now());
-		dateLastCall.setValue(LocalDate.now());
-		new ContactBO().saveOrUpdate(contact);
-		fillContactList();
-	}
-
-	@FXML
-	public void btnDeleteClicked() {
-
-		new ContactBO().delete(contact);
-		clearDetailsField();
-		fillContactList();
-	}
-
-	private void lstContactItemClicked(MouseEvent mouseEvent) {
-		int selected = lstContact.getSelectionModel().getSelectedIndex();
-		contact = lstContact.getItems().get(selected);
-		fillDetailsField(contact);
-		enableOrDisableDetailsField(true);
-		btnConfirmCall.setVisible(true);
-	}
-
-	private void setPnlDetailsTitle(String pnlTitle) {
-
-		lblDetailsTitle.setText(pnlTitle);
-	}
-
-	private void fillDetailsField(ContactVO contact) {
-		if (!pnlDetails.isVisible())
-			pnlDetails.setVisible(true);
-		txtName.setText(contact.getName());
-		txtRG.setText(contact.getRG());
-		txtCPF.setText(contact.getCPF());
-		txtNickname.setText(contact.getNickname());
-		txtAddress.setText(contact.getAddress());
-		txtEmail.setText(contact.getEmail());
-		txtPhone.setText(contact.getPhone());
-		txtWhatsapp.setText(contact.getWhatsapp());
-		System.out.println(contact.getLastCall());
-		dateLastCall.setValue(contact.getLastCall());
-		setPnlDetailsTitle("INFORMAÇÔES DO CONTATO");
-		btnSave.setDisable(true);
-
-	}
-
-	private void clearDetailsField() {
-		List<Node> nodes = pnlDetails.getChildren();
-		nodes.forEach((n) -> {
-			if (n instanceof TextField || n instanceof TextArea)
-				((TextInputControl) n).setText("");
-
+	public static void numericField(final TextField textField) {
+		textField.lengthProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				if (newValue.intValue() > oldValue.intValue()) {
+					char ch = textField.getText().charAt(oldValue.intValue());
+					if (!(ch >= '0' && ch <= '9')) {
+						textField.setText(textField.getText().substring(0, textField.getText().length() - 1));
+					}
+				}
+			}
 		});
 	}
 
-	private void enableOrDisableDetailsField(boolean isDisable) {
-		List<Node> nodes = pnlDetails.getChildren();
-		nodes.forEach((n) -> {
-			if (n instanceof TextField || n instanceof TextArea)
-				((TextInputControl) n).setDisable(isDisable);
-			if (n instanceof DatePicker)
-				n.setDisable(isDisable);
+	public static void addTextLimiter(final TextField tf, final int maxLength) {
+		tf.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(final ObservableValue<? extends String> ov, final String oldValue,
+					final String newValue) {
+				if (tf.getText().length() > maxLength) {
+					String s = tf.getText().substring(0, maxLength);
+					tf.setText(s);
+				}
+			}
 		});
 	}
 
-	private void fillContactList() {
-		lstContact.getItems().clear();
-		observableListContacts.setAll(new ContactBO().listAll());
-		lstContact.setItems(observableListContacts);
-	}
+
 }
 
 class ContactListCell extends ListCell<ContactVO> {
+
 	@Override
 	protected void updateItem(ContactVO item, boolean empty) {
 		super.updateItem(item, empty);
@@ -258,7 +310,7 @@ class ContactListCell extends ListCell<ContactVO> {
 			return;
 		}
 		setText(item.getName());
-		if (LocalDate.now().isBefore(item.getLastCall())) {
+		if (LocalDate.now().isBefore(item.getLastCall())) {// TODO mudar a logica para veriricar o reminder
 			getStyleClass().addAll("withicon", "showing");
 			getStylesheets().add(getClass().getResource("/style/StyleApp.css").toExternalForm());
 		}
