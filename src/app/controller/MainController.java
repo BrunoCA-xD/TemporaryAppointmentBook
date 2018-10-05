@@ -20,6 +20,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.Label;
@@ -108,7 +110,43 @@ public class MainController implements Initializable {
 		btnSave.setDisable(false);
 		btnConfirmCall.setVisible(false);
 	}
-	
+
+	@FXML
+	public void btnAddMouseEntered() {
+		ImageView img = (ImageView) btnAdd.getChildrenUnmodifiable().get(0);
+		img.setImage(new Image(getClass().getResourceAsStream("/icon/add_white.png")));
+	}
+
+	@FXML
+	public void btnAddMouseExited() {
+		ImageView img = (ImageView) btnAdd.getChildrenUnmodifiable().get(0);
+		img.setImage(new Image(getClass().getResourceAsStream("/icon/add.png")));
+	}
+
+	@FXML
+	public void btnEditMouseEntered() {
+		ImageView img = (ImageView) btnEdit.getChildrenUnmodifiable().get(0);
+		img.setImage(new Image(getClass().getResourceAsStream("/icon/edit_white.png")));
+	}
+
+	@FXML
+	public void btnEditMouseExited() {
+		ImageView img = (ImageView) btnEdit.getChildrenUnmodifiable().get(0);
+		img.setImage(new Image(getClass().getResourceAsStream("/icon/edit.png")));
+	}
+
+	@FXML
+	public void btnDeleteMouseEntered() {
+		ImageView img = (ImageView) btnDelete.getChildrenUnmodifiable().get(0);
+		img.setImage(new Image(getClass().getResourceAsStream("/icon/add_white.png")));
+	}
+
+	@FXML
+	public void btnDeleteMouseExited() {
+		ImageView img = (ImageView) btnDelete.getChildrenUnmodifiable().get(0);
+		img.setImage(new Image(getClass().getResourceAsStream("/icon/add.png")));
+	}
+
 	@FXML
 	public void btnEditClicked() {
 		enableOrDisableDetailsField(false);
@@ -121,8 +159,7 @@ public class MainController implements Initializable {
 			contact = new ContactVO(txtName.getText().trim(), txtCPF.getText().trim(), txtRG.getText().trim(),
 					txtNickname.getText().trim(), txtAddress.getText().trim(), txtEmail.getText().trim(),
 					txtPhone.getText().trim(), txtWhatsapp.getText().trim(), dateLastCall.getValue());
-		}
-		else {
+		} else {
 			contact.setName(txtName.getText().trim());
 			contact.setCPF(txtCPF.getText().trim());
 			contact.setRG(txtRG.getText().trim());
@@ -136,22 +173,24 @@ public class MainController implements Initializable {
 		new ContactBO().saveOrUpdate(contact);
 		fillContactList();
 	}
-	
+
 	@FXML
-	public void btnConfirmCallClicked() {	
+	public void btnConfirmCallClicked() {
 		System.out.println(LocalDate.now());
 		contact.setLastCall(LocalDate.now());
 		dateLastCall.setValue(LocalDate.now());
 		new ContactBO().saveOrUpdate(contact);
 		fillContactList();
 	}
+
 	@FXML
-	public void btnDeleteClicked() {	
-		
+	public void btnDeleteClicked() {
+
 		new ContactBO().delete(contact);
 		clearDetailsField();
 		fillContactList();
 	}
+
 	private void lstContactItemClicked(MouseEvent mouseEvent) {
 		int selected = lstContact.getSelectionModel().getSelectedIndex();
 		contact = lstContact.getItems().get(selected);
