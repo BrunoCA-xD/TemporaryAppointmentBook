@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gluonhq.charm.glisten.control.ToggleButtonGroup?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane minHeight="30.0" minWidth="30.0" prefHeight="440.0" prefWidth="338.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="app.controller.ReminderController">
+   <children>
+      <ComboBox fx:id="cboContact" layoutX="73.0" layoutY="77.0" prefHeight="20.0" prefWidth="191.0" />
+      <ToggleButtonGroup fx:id="tgGroup" layoutX="31.0" layoutY="154.0" selectionType="SINGLE">
+         <toggles>
+            <RadioButton fx:id="rbNextDate" mnemonicParsing="false" prefHeight="30.0" prefWidth="141.0" text="RadioButton" />
+            <RadioButton fx:id="rbInterval" mnemonicParsing="false" prefHeight="30.0" prefWidth="134.0" text="RadioButton" />
+         </toggles>
+      </ToggleButtonGroup>
+      <AnchorPane layoutX="38.0" layoutY="204.0" prefHeight="200.0" prefWidth="254.0">
+         <children>
+            <DatePicker fx:id="dpChooseDate" layoutX="26.0" layoutY="14.0" prefHeight="25.0" prefWidth="202.0" />
+            <TextField fx:id="txtUnityNumber" layoutX="14.0" layoutY="68.0" prefHeight="30.0" prefWidth="52.0" visible="false" />
+            <ComboBox fx:id="cboUnit" layoutX="90.0" layoutY="71.0" prefWidth="150.0" visible="false" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
