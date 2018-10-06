@@ -1,16 +1,25 @@
 package app.controller;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import app.model.BO.ContactBO;
 import app.model.VO.ContactVO;
+import app.util.ScreenUtil;
+import app.util.ScreenUtil.OnChangeScreen;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -22,10 +31,13 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class MainController implements Initializable {
 
@@ -73,11 +85,18 @@ public class MainController implements Initializable {
 	@FXML
 	private Label lblDetailsTitle;
 
-	ObservableList<ContactVO> observableListContacts = FXCollections.observableArrayList();
-	ContactVO contact;
+	private ObservableList<ContactVO> observableListContacts = FXCollections.observableArrayList();
+	private ContactVO contact;
+	private HashMap<String, Object> hmp;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		hmp = new HashMap<String, Object>();
+		ScreenUtil.addOnChangeScreenListener(new OnChangeScreen() {
+			public void onScreenChanged(String newScreen, HashMap<String, Object> hmap) {
+				// por enquanto nada
+			}
+		});
 		btnCloseDetails.getStyleClass().add("btn");
 		observableListContacts.setAll(new ContactBO().listAll());
 
@@ -88,14 +107,14 @@ public class MainController implements Initializable {
 			lstContactItemClicked(MouseEvent);
 		});
 		fillContactList(null);
-		numericField(txtCPF);
-		addTextLimiter(txtCPF, 11);
-		numericField(txtRG);
-		addTextLimiter(txtRG, 9);
-		numericField(txtPhone);
-		addTextLimiter(txtPhone, 11);
-		numericField(txtWhatsapp);
-		addTextLimiter(txtWhatsapp, 11);
+		ScreenUtil.numericField(txtCPF);
+		ScreenUtil.addTextLimiter(txtCPF, 11);
+		ScreenUtil.numericField(txtRG);
+		ScreenUtil.addTextLimiter(txtRG, 9);
+		ScreenUtil.numericField(txtPhone);
+		ScreenUtil.addTextLimiter(txtPhone, 11);
+		ScreenUtil.numericField(txtWhatsapp);
+		ScreenUtil.addTextLimiter(txtWhatsapp, 11);
 
 	}
 
@@ -125,6 +144,7 @@ public class MainController implements Initializable {
 	public void btnEditClicked() {
 		enableOrDisableDetailsField(false);
 		btnSave.setDisable(false);
+
 	}
 
 	@FXML
@@ -151,12 +171,21 @@ public class MainController implements Initializable {
 	@FXML
 	public void btnConfirmCallClicked() {
 		contact.setLastCall(LocalDate.now());
+		if (contact.getCallInterval() > 0)
+			contact.setNextCall(new ContactBO().addInterval(LocalDate.now(), contact.getCallInterval()));
 		dateLastCall.setValue(LocalDate.now());
 		new ContactBO().saveOrUpdate(contact);
 		disableOrEnableControls(false);
 		btnSave.setDisable(true);
 		fillContactList(null);
 
+	}
+
+	@FXML
+	public void btnConfigCall(ActionEvent event) {
+		hmp.put("contact", contact);
+		new ScreenUtil().openNewWindow((Stage) pnlDetails.getScene().getWindow(), "Reminder", true, hmp);
+		fillContactList(null);
 	}
 
 	@FXML
@@ -177,11 +206,14 @@ public class MainController implements Initializable {
 
 	private void lstContactItemClicked(MouseEvent mouseEvent) {
 		int selected = lstContact.getSelectionModel().getSelectedIndex();
-		contact = lstContact.getItems().get(selected);
-		fillDetailsField(contact);
-		enableOrDisableDetailsField(true);
-		disableOrEnableControls(false);
-		btnConfirmCall.setVisible(true);
+		if (selected > -1) {
+			contact = lstContact.getItems().get(selected);
+			fillDetailsField(contact);
+			enableOrDisableDetailsField(true);
+			disableOrEnableControls(false);
+			btnConfirmCall.setVisible(true);
+			btnConfigCall.setDisable(false);
+		}
 
 	}
 
@@ -215,6 +247,7 @@ public class MainController implements Initializable {
 	}
 
 	private void clearDetailsField() {
+		btnConfigCall.setDisable(true);
 		List<Node> nodes = pnlDetails.getChildren();
 		nodes.forEach((n) -> {
 			if (n instanceof TextField || n instanceof TextArea)
@@ -224,6 +257,7 @@ public class MainController implements Initializable {
 	}
 
 	private void enableOrDisableDetailsField(boolean isDisable) {
+
 		List<Node> nodes = pnlDetails.getChildren();
 		nodes.forEach((n) -> {
 			if (n instanceof TextField || n instanceof TextArea)
@@ -278,49 +312,41 @@ public class MainController implements Initializable {
 		img.setImage(new Image(getClass().getResourceAsStream("/icon/add.png")));
 	}
 
-	public static void numericField(final TextField textField) {
-		textField.lengthProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				if (newValue.intValue() > oldValue.intValue()) {
-					char ch = textField.getText().charAt(oldValue.intValue());
-					if (!(ch >= '0' && ch <= '9')) {
-						textField.setText(textField.getText().substring(0, textField.getText().length() - 1));
-					}
-				}
-			}
-		});
-	}
-
-	public static void addTextLimiter(final TextField tf, final int maxLength) {
-		tf.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(final ObservableValue<? extends String> ov, final String oldValue,
-					final String newValue) {
-				if (tf.getText().length() > maxLength) {
-					String s = tf.getText().substring(0, maxLength);
-					tf.setText(s);
-				}
-			}
-		});
-	}
-
 }
 
 class ContactListCell extends ListCell<ContactVO> {
 
 	@Override
 	protected void updateItem(ContactVO item, boolean empty) {
+		final Tooltip tooltip = new Tooltip();
+		tooltip.setShowDelay(Duration.millis(1));
 		super.updateItem(item, empty);
 		if (item == null || empty) {
+			getStyleClass().removeAll("withicon", "showing-warning", "showing-danger");
 			setText("");
-			getStyleClass().clear();
+			setTooltip(null);
 			return;
 		}
 		setText(item.getName());
-		if (LocalDate.now().isBefore(item.getLastCall())) {// TODO mudar a logica para veriricar o reminder
-			getStyleClass().addAll("withicon", "showing");
-			getStylesheets().add(getClass().getResource("/style/StyleApp.css").toExternalForm());
+		setStyle("-fx-font: 18px 'System'");
+		if (item.getNextCall() == null) {
+			getStyleClass().addAll("withicon", "showing-warning");
+			tooltip.setText("Sem ligação agendada");
+			setTooltip(tooltip);
+			return;
+		} else {
+			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/YYYY");
+			Date date = Date.from(item.getNextCall().atStartOfDay(ZoneId.systemDefault()).toInstant());
+			tooltip.setText("Proxima ligação: " + formatter.format(date));
+			setTooltip(tooltip);
+		}
+		if (LocalDate.now().isAfter(item.getNextCall())) {// TODO mudar a logica para veriricar o reminder
+			getStyleClass().addAll("withicon", "showing-danger");
+			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/YYYY");
+			Date date = Date.from(item.getNextCall().atStartOfDay(ZoneId.systemDefault()).toInstant());
+			tooltip.setText("Ligação atrasada!  " + formatter.format(date));
+			setTooltip(tooltip);
+
 		}
 	}
 

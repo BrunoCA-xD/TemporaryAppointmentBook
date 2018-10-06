@@ -1,59 +1,77 @@
 package app.controller;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
-import app.model.BO.ReminderBO;
-import app.model.VO.ReminderVO;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javax.swing.JOptionPane;
+
+import app.model.BO.ContactBO;
+import app.model.VO.ContactVO;
+import app.util.ScreenUtil;
+import app.util.ScreenUtil.OnChangeScreen;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.RadioButton;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 
 public class ReminderController implements Initializable {
-	
+
 	@FXML
-	private ComboBox<ReminderVO> cboContact;
-	
+	DatePicker dateNextCall;
 	@FXML
-	private ComboBox<String> cboUnit;
-	
+	AnchorPane pnlRoot;
 	@FXML
-	private DatePicker dpChooseDate;
-	
+	Label lblContact;
 	@FXML
-	private ToggleGroup tgGroup;
-	
-	@FXML
-	private RadioButton rbNextDate;
-	
-	@FXML 
-	private RadioButton rbInterval;
-	
-	@FXML
-	private TextField txtUnityNumber;
-	
-	private ReminderBO objReminderBO; 
-	private ObservableList<ReminderVO> obsReminder;
+	TextField txtInterval;
+
+	private ContactVO contact;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		objReminderBO = new ReminderBO();
-		fillContact();
+		ScreenUtil.addOnChangeScreenListener(new OnChangeScreen() {
+			public void onScreenChanged(String newScreen, HashMap<String, Object> hmap) {
+				contact = (ContactVO) hmap.get("contact");
+				lblContact.setText("Contato: " + contact.getName());
+				dateNextCall.setValue(contact.getNextCall());
+				if (contact.getCallInterval() > 0) {
+					txtInterval.setText(String.valueOf(contact.getCallInterval()));
+				}
+			}
+		});
+
+		ScreenUtil.numericField(txtInterval);
 	}
-	
-	public void fillContact() {
-		obsReminder = FXCollections.observableArrayList(objReminderBO.listAll());
-		cboContact.setItems(obsReminder);
+
+	@FXML
+	public void btnConfirmClicked(ActionEvent event) {
+		if (dateNextCall.getValue() == null) {
+			JOptionPane.showMessageDialog(null, "Selecione uma data para a proxima ligação");
+			return;
+		}
+		int interval;
+		try {
+			interval = Integer.parseInt(txtInterval.getText().trim());
+		} catch (Exception e) {
+			interval = 0;
+		}
+		if (interval != 0) {
+			contact.setCallInterval(interval);
+		}
+		contact.setNextCall(dateNextCall.getValue());
+		new ContactBO().saveOrUpdate(contact);
+
+		((Stage) pnlRoot.getScene().getWindow()).close();
 	}
-	
-	public void cboContractChanged() {
-		
+
+	@FXML
+	public void btnGetBackClicked(ActionEvent event) {
+		((Stage) pnlRoot.getScene().getWindow()).close();
 	}
 
 }

@@ -1,12 +1,17 @@
 .withicon {    
-    -fx-background-position: right 4.0px center;
+    -fx-background-position: right 10.0px center;
     -fx-background-size: 14.0;
     -fx-background-repeat: no-repeat;
 }
 
-.showing {
-    -fx-background-image: url("/style/eye.png");
+.showing-danger {
+    -fx-background-image: url("/icon/danger.png");
     -fx-text-fill: red;
+}
+.showing-warning {
+	
+    -fx-background-image: url("/icon/warning.png");
+    -fx-text-fill: gold;
 }
 
 .hiding {
@@ -40,6 +45,3 @@
 	-fx-rotate: 45.0;
 }
 
-.btn_menu:hover{
-
-}

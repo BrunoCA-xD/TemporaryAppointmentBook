@@ -9,6 +9,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.sun.istack.NotNull;
+
+import net.bytebuddy.implementation.bind.annotation.Default;
+
 @Entity
 @Table(name = "contact")
 public class ContactVO {
@@ -23,7 +27,8 @@ public class ContactVO {
 	private String _phone;
 	private String _whatsapp;
 	private LocalDate _lastCall;
-	
+	private LocalDate _nextCall;
+	private int _callInterval;
 
 	public ContactVO() {
 	}
@@ -139,4 +144,21 @@ public class ContactVO {
 		this._lastCall = lastCall;
 	}
 
+	@Column(name = "NEXT_CALL")
+	public LocalDate getNextCall() {
+		return _nextCall;
+	}
+
+	public void setNextCall(LocalDate nextCall) {
+		this._nextCall = nextCall;
+	}
+	
+	@Column(name = "CALL_INTERVAL")
+	public int getCallInterval() {
+		return _callInterval;
+	}
+
+	public void setCallInterval(int callInterval) {
+		this._callInterval = callInterval;
+	}
 }

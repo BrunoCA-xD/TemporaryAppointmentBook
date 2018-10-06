@@ -52,7 +52,7 @@
                </graphic>
             </Button>
             <Pane prefHeight="98.0" prefWidth="100.0" />
-            <Button fx:id="btnConfigCall" ellipsisString="" layoutX="10.0" layoutY="220.0" mnemonicParsing="false" prefHeight="78.0" prefWidth="113.0" styleClass="btn_menu">
+            <Button fx:id="btnConfigCall" disable="true" ellipsisString="" layoutX="10.0" layoutY="220.0" mnemonicParsing="false" onAction="#btnConfigCall" prefHeight="78.0" prefWidth="113.0" styleClass="btn_menu">
                <graphic>
                   <ImageView fitHeight="58.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true" styleClass="btn_menu">
                      <image>
@@ -82,7 +82,14 @@
                         <HBox prefHeight="26.0" prefWidth="212.0" spacing="10.0">
                            <children>
                               <TextField fx:id="txtSearch" prefHeight="26.0" prefWidth="169.0" />
-                              <Button fx:id="btnSearch" onAction="#btnSearchClicked" mnemonicParsing="false" text="Pesquisar" />
+                              <Button fx:id="btnSearch" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#btnSearchClicked" styleClass="btn" text="Pesquisar">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icon/search.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic></Button>
                            </children>
                            <VBox.margin>
                               <Insets />
@@ -121,7 +128,7 @@
                       <RowConstraints maxHeight="108.80001220703127" minHeight="5.599981689453102" prefHeight="66.20001220703125" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <AnchorPane fx:id="pnlDetails" visible="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="482.0" prefWidth="463.99999999999994" styleClass="pnlDetails" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <AnchorPane fx:id="pnlDetails" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="482.0" prefWidth="463.99999999999994" styleClass="pnlDetails" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <children>
                               <Label layoutX="16.0" layoutY="27.0" text="NOME" AnchorPane.leftAnchor="16.0" />
                               <TextField fx:id="txtName" layoutX="16.0" layoutY="46.0" prefHeight="26.0" prefWidth="433.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="15.0" />
