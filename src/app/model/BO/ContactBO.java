@@ -21,6 +21,12 @@ public class ContactBO {
 		return lst;
 	}
 
+	public List<ContactVO> searchName(String search) {
+		List<ContactVO> lst = new ContactDAO().listSearch(search);
+
+		return lst;
+	}
+
 	private LocalDate addOneDay(LocalDate dateToAdd) {
 		GregorianCalendar gc = new GregorianCalendar();
 		Date date = Date.from(dateToAdd.atStartOfDay(ZoneId.systemDefault()).toInstant());

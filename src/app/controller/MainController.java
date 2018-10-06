@@ -87,7 +87,7 @@ public class MainController implements Initializable {
 		lstContact.setOnMouseClicked(MouseEvent -> {
 			lstContactItemClicked(MouseEvent);
 		});
-		fillContactList();
+		fillContactList(null);
 		numericField(txtCPF);
 		addTextLimiter(txtCPF, 11);
 		numericField(txtRG);
@@ -145,7 +145,7 @@ public class MainController implements Initializable {
 			contact.setLastCall(dateLastCall.getValue());
 		}
 		new ContactBO().saveOrUpdate(contact);
-		fillContactList();
+		fillContactList(null);
 	}
 
 	@FXML
@@ -155,7 +155,7 @@ public class MainController implements Initializable {
 		new ContactBO().saveOrUpdate(contact);
 		disableOrEnableControls(false);
 		btnSave.setDisable(true);
-		fillContactList();
+		fillContactList(null);
 
 	}
 
@@ -165,8 +165,14 @@ public class MainController implements Initializable {
 		new ContactBO().delete(contact);
 		clearDetailsField();
 		disableOrEnableControls(true);
-		fillContactList();
+		fillContactList(null);
 		btnAddClicked();
+	}
+
+	@FXML
+	public void btnSearchClicked() {
+
+		fillContactList(txtSearch.getText().trim());
 	}
 
 	private void lstContactItemClicked(MouseEvent mouseEvent) {
@@ -227,9 +233,12 @@ public class MainController implements Initializable {
 		});
 	}
 
-	private void fillContactList() {
+	private void fillContactList(String search) {
 		lstContact.getItems().clear();
-		observableListContacts.setAll(new ContactBO().listAll());
+		if (search == null)
+			observableListContacts.setAll(new ContactBO().listAll());
+		else
+			observableListContacts.setAll(new ContactBO().searchName(search));
 		lstContact.setItems(observableListContacts);
 	}
 
@@ -295,7 +304,6 @@ public class MainController implements Initializable {
 			}
 		});
 	}
-
 
 }
 

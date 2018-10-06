@@ -82,7 +82,7 @@
                         <HBox prefHeight="26.0" prefWidth="212.0" spacing="10.0">
                            <children>
                               <TextField fx:id="txtSearch" prefHeight="26.0" prefWidth="169.0" />
-                              <Button fx:id="btnSearch" mnemonicParsing="false" text="Pesquisar" />
+                              <Button fx:id="btnSearch" onAction="#btnSearchClicked" mnemonicParsing="false" text="Pesquisar" />
                            </children>
                            <VBox.margin>
                               <Insets />
