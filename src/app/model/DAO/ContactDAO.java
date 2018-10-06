@@ -6,6 +6,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
 import app.model.VO.ContactVO;
+import app.model.DAO.GenericsDAO;
 import app.util.HibernateUtil;
 
 public class ContactDAO extends GenericsDAO<ContactVO, Integer> {
